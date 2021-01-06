@@ -54,3 +54,12 @@ sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='hfy166 Ver.$date1'/g" packa
 sed -i "s/OpenWrt/MiRouter/g" package/base-files/files/bin/config_generate
 sed -i "s/# REVISION:=x/REVISION:= $date/g" include/version.mk
 sed -i '$a cgi-timeout = 300' package/feeds/packages/uwsgi/files-luci-support/luci-webui.ini
+sed -i 's/https:\/\/op.supes.top/http:\/\/openwrt.ink:8666/g' custom/luci-app-gpsysupgrade/root/usr/bin/upgrade.lua
+sed -i 's/https:\/\/op.supes.top/http:\/\/openwrt.ink:8666/g' custom/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
+rm -f custom/luci-app-gpsysupgrade/luasrc/view/admin_status/index/links.htm
+cp logos/oplinks.htm custom/luci-app-gpsysupgrade/luasrc/view/admin_status/index/links.htm
+sed -i 's/系统在线更新/系统升级/g' custom/luci-app-gpsysupgrade/po/zh_Hans/gpsysupgrade.po
+sed -i 's/系统在线更新/系统升级/g' custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
+sed -i "1i\msgstr "Passwall+"" custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
+sed -i "1i\msgid "Bypass"" custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
+sed -i 's/"IP限速"/"网速控制"/g' custom/luci-app-eqos/files/po/zh-cn/eqos.po
