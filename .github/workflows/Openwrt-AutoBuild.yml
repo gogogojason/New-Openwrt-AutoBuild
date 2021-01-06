@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [All_RM2100,Sim_RM2100]  #[Lean_x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Lienol_x86_64,]
+        target: [All_RM2100,Sim_RM2100,Ap_RM2100]  #[Lean_x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Lienol_x86_64,]
         
     steps:
     - name: 准备完成
@@ -114,7 +114,7 @@ jobs:
         ln -sf /mnt/openwrt/dl openwrt/dl
         ln -sf /mnt/openwrt/staging_dir openwrt/staging_dir
         
-    - name: 下载更新${{matrix.target}}源码
+    - name: 应用自定义文件
       run: |
         cp -rf devices/common/* openwrt/
         cp -rf devices/${{matrix.target}}/* openwrt/
