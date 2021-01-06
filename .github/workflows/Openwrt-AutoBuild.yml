@@ -163,7 +163,7 @@ jobs:
         df -hT
         echo "======================="
         du -h --max-depth=1 openwrt/ --exclude=build_dir --exclude=bin
-        du -h --max-depth=1 openwrt/custom
+        du -h --max-depth=1 openwrt/feeds/custom
         
     - name: SSH远程连接服务器配置固件
       uses: garypang13/debugger-action@master
