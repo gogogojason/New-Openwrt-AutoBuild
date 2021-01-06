@@ -10,6 +10,7 @@ rm -Rf feeds/packages/net/{smartdns,frp,mwan3,miniupnpd} feeds/luci/applications
 svn co https://github.com/project-openwrt/packages/trunk/lang/python/Flask-RESTful feeds/packages/lang/python/Flask-RESTful
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
+./scripts/feeds update -a
 sed -i 's/Os/O2/g' include/target.mk
 rm -Rf package/network/utils/iwinfo; svn co https://github.com/coolsnowwolf/lede/trunk/package/network/utils/iwinfo package/network/utils/iwinfo
 rm -Rf tools/upx && svn co https://github.com/coolsnowwolf/lede/trunk/tools/upx tools/upx
