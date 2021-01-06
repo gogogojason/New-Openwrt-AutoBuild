@@ -8,34 +8,48 @@
 
 name: 19.07OpenWrt
 
-on: 
-  repository_dispatch:
+on:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+
+
+# 定时触发编译(每天早5点)
+#  schedule:
+#    - cron: 0 20 * * *
+
+
+# 点赞☆Star触发编译
+#  watch:
+#    types: [started]
 
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-  PPPOE_USERNAME: ${{ secrets.PPPOE_USERNAME }}
-  PPPOE_PASSWD: ${{ secrets.PPPOE_PASSWD }}
   SCKEY: ${{ secrets.SCKEY }}
   TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
   TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   TZ: Asia/Shanghai
-
+  GITHUB_RELEASE: https://github.com/gogogojason/OpenWrt-AutoBuild/releases
+  
 jobs:
   build:
     runs-on: Ubuntu-20.04
     
-    name: Build ${{matrix.target}}
+    name: 编译 ${{matrix.target}}
     strategy:
       fail-fast: false
       matrix:
-        target: ["${{ github.event.client_payload.target }}"]
+        target: [All_RM2100,Sim_RM2100]  #[Lean_x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Lienol_x86_64,]
         
     steps:
-    - name: Checkout
+    - name: 准备完成
       uses: actions/checkout@main
   
-    - name: Load Settings.ini
+    - name: 加载设置文件
       run: |
         source "${GITHUB_WORKSPACE}/devices/common/settings.ini"
         if [ -f "devices/${{matrix.target}}/settings.ini" ]; then
@@ -51,13 +65,27 @@ jobs:
         echo "UPLOAD_FIRMWARE_FOR_RELEASE=${UPLOAD_FIRMWARE_FOR_RELEASE}" >> $GITHUB_ENV
         echo "UPLOAD_FIRMWARE_TO_COWTRANSFER=${UPLOAD_FIRMWARE_TO_COWTRANSFER}" >> $GITHUB_ENV
         echo "UPLOAD_FIRMWARE_TO_WETRANSFER=${UPLOAD_FIRMWARE_TO_WETRANSFER}" >> $GITHUB_ENV
-    - name: Trigger Packages Update
+        echo "WXFB_MESSAGE=${WXFB_MESSAGE}" >> $GITHUB_ENV
+        echo "CUSTOM_SH=${CUSTOM_SH}" >> $GITHUB_ENV
+        echo "SSH_ACTIONS=${SSH_ACTIONS}" >> $GITHUB_ENV
+        echo "UPLOAD_FIRMWARE=${UPLOAD_FIRMWARE}" >> $GITHUB_ENV
+        echo "UPLOAD_VMDK=${UPLOAD_VMDK}" >> $GITHUB_ENV
+        echo "UPLOAD_IPK=${UPLOAD_IPK}" >> $GITHUB_ENV
+        echo "UPLOAD_CONFIG=${UPLOAD_CONFIG}" >> $GITHUB_ENV
+        echo "UPLOAD_COWTRANSFER=${UPLOAD_COWTRANSFER}" >> $GITHUB_ENV
+        echo "UPLOAD_WETRANSFER=${UPLOAD_WETRANSFER}" >> $GITHUB_ENV
+        echo "UPLOAD_RELEASE=${UPLOAD_RELEASE}" >> $GITHUB_ENV
+        echo "SERVERCHAN_SCKEY=${SERVERCHAN_SCKEY}" >> $GITHUB_ENV
+        echo "UPLOAD_MYPAN=${UPLOAD_MYPAN}" >> $GITHUB_ENV
+        
+    - name: 更新克隆插件包
       if: github.event.repository.owner.id == '48883331'
       run: |
-        curl -X POST https://api.github.com/repos/garypang13/openwrt-packages/dispatches \
+        curl -X POST https://api.github.com/repos/gogogojason/oppackages/dispatches \
         -H "Accept: application/vnd.github.everest-preview+json" \
         -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
         --data '{"event_type": "update"}'
+         
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -69,18 +97,26 @@ jobs:
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
     
-    - name: Get current date
+    - name: 更新日期
       id: date
       run: |
+        sudo timedatectl set-timezone "$TZ"
+        echo "::set-output name=status::success"
+        echo "FILE_DATE=$(date +"%m-%d %H.%M")" >> $GITHUB_ENV
+        echo "FILE_DATE1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV
+        echo "FILE_DATE2=$(date "+%Y%m%d-%H%M")" >> $GITHUB_ENV
+        echo "FILE_DATE3=$(date "+%Y%m%d")" >> $GITHUB_ENV
+        echo "FILE_DATE4=$(date "+%m.%d")" >> $GITHUB_ENV
         echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
         echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
-    - name: Clone source code
+        
+    - name: 加载openwrt源
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
       
-    - name: Free up disk space
+    - name: 释放磁盘空间
       if: env.FREE_UP_DISK == 'true'
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -88,13 +124,15 @@ jobs:
         sudo mkdir -p -m 777 /mnt/openwrt/dl /mnt/openwrt/staging_dir
         ln -sf /mnt/openwrt/dl openwrt/dl
         ln -sf /mnt/openwrt/staging_dir openwrt/staging_dir
-    - name: Load && Update feeds
+        
+    - name: 下载更新${{matrix.target}}源码
       run: |
         cp -rf devices/common/* openwrt/
         cp -rf devices/${{matrix.target}}/* openwrt/
         cd openwrt
         ./scripts/feeds update -a
-    - name: Load custom configuration
+        
+    - name: 加载配置文件
       run: |
         cp -rf devices openwrt/
         cd openwrt
@@ -115,7 +153,8 @@ jobs:
           echo >> .config
           cat devices/${{matrix.target}}/$CONFIG_FILE >> .config
         fi
-    - name: Apply patches
+        
+    - name: 打补丁
       run: |
         cd openwrt
         find "devices/common/patches" -type f ! -path 'devices/common/patches/china_mirrors.patch' -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 -E --forward --no-backup-if-mismatch"
@@ -123,18 +162,15 @@ jobs:
           find "devices/${{matrix.target}}/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 -E --forward --no-backup-if-mismatch"
         fi
         
-    - name: Default PPPOE Setting
-      if: env.PPPOE_USERNAME && env.PPPOE_PASSWD
-      run: |
-        sed -i '$i uci set network.wan.username=${{ env.PPPOE_USERNAME }}' openwrt/package/*/*/default-settings/root/etc/uci-defaults/99-default-settings
-        sed -i '$i uci set network.wan.password=${{ env.PPPOE_PASSWD }}' openwrt/package/*/*/default-settings/root/etc/uci-defaults/99-default-settings
-        sed -i '$i uci commit network' openwrt/package/*/*/default-settings/root/etc/uci-defaults/99-default-settings
+        echo "修改地址"
+        sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' package/jason/luci-app-gpsysupgrade/root/usr/bin/upgrade.lua
+        sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' package/jason/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua  
               
-    - name: SSH connection to Actions
+    - name: SSH在线连接调整
       uses: garypang13/debugger-action@master
       if: contains(github.event.action, 'ssh')
 
-    - name: Download package
+    - name: 下载软件包
       id: package
       run: |
         cd openwrt
@@ -142,7 +178,8 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-    - name: Compile the firmware
+        
+    - name: 开始编译固件
       id: compile
       run: |
         cd openwrt
@@ -150,16 +187,19 @@ jobs:
         make -j$(($(nproc)+1)) || make -j1 V=s
         echo "::set-output name=status::success"
       
-    - name: Upload bin directory
+    - name: 上传bin文件
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR_FOR_ARTIFACT == 'true'
       with:
         name: OpenWrt_bin_${{matrix.target}}
         path: openwrt/bin
 
-    - name: Organize files
+    - name: 整理固件
       id: organize
       run: |
+        mkdir -p ./artifact/package
+        rm -rf $(find openwrt/bin/targets/ -type d -name "packages")
+        cp -rf openwrt/bin/packages/ ./artifact/package/
         mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
         -name "*combined*" \
         -or -name "*sysupgrade*" \
@@ -184,89 +224,120 @@ jobs:
         elif [ ${{matrix.target}} == "x86_64" ]; then
         echo "NOTICE=请分配不少于800M的存储容量" >> $GITHUB_ENV
         fi
-    - name: Deploy files to server
-      uses: easingthemes/ssh-deploy@master
-      continue-on-error: true
-      if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
-      with:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-avzr --exclude="
-        SOURCE: firmware/
-        REMOTE_HOST: op.supes.top
-        REMOTE_USER: root
-        TARGET: "/www/wwwroot/op.supes.top/firmware/${{matrix.target}}/"
- 
-    - name: Upload firmware to cowtransfer
-      if: env.UPLOAD_FIRMWARE_TO_COWTRANSFER == 'true'
-      continue-on-error: true
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        cowurl=$(./transfer cow --block 2621440 -s --no-progress ${FIRMWARE})
-        cowurl=$(echo $cowurl | grep -o -E "https[^ ]*")
-        echo "COWURL=$cowurl" >> $GITHUB_ENV
-        echo "Download Link: ${{ env.EMOJI }} $cowurl ${{ env.EMOJI }} 🚀"
- 
-    - name: Upload firmware to WeTransfer
-      if: env.UPLOAD_FIRMWARE_TO_WETRANSFER == 'true' && ! contains(github.event.action, 'noup')
-      continue-on-error: true
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        wetrans=$(./transfer wet -s -p 16 --no-progress ${FIRMWARE})
-        wetrans=$(echo $wetrans | grep -o -E "https[^ ]*")
-        echo "WETRANS=$wetrans" >> $GITHUB_ENV
-        echo "Download Link: ${{ env.EMOJI }} $wetrans ${{ env.EMOJI }} 🚀"
-    - name: Create release
-      id: create_release
-      if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
-      continue-on-error: true
-      run: |
-        echo -e "墙内加速下载 🚀:\n" >> release.txt
-        echo -e "[腾讯云] (https://op.supes.top/firmware/${{matrix.target}}/ ☁)\n" >> release.txt
-        [ ${{ env.WETRANS }} ] && echo -e "[WeTransfer] (${{ env.WETRANS }} 🗽)\n" >> release.txt
-        [ ${{ env.COWURL }} ] && echo -e "[奶牛上传] (${{ env.COWURL }} 🐮)\n" >> release.txt
-        [ ${{ env.NOTICE }} ] && echo -e "${{ env.NOTICE }}" >> release.txt || true
-    - name: Upload firmware for release
-      uses: softprops/action-gh-release@v1
-      continue-on-error: true
-      if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-      with:
-        files: "${{ env.FIRMWARE }}/*"
-        name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
-        tag_name: ${{ env.date }}_${{matrix.target}}
-        body_path: release.txt
-
-    - name: Upload firmware for artifact
-      uses: actions/upload-artifact@main
-      continue-on-error: true
-      if: env.UPLOAD_FIRMWARE_FOR_ARTIFACT == 'true'
-      with:
-        name: ${{ env.date3 }} ${{matrix.target}}
-        path: ${{ env.FIRMWARE }}
         
-    - name: WeChat notification
-      continue-on-error: true
-      if: env.SCKEY
-      run: |
-        [ steps.compile.outputs.status == 'success' ] && curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=🎉OpenWrt_${{ env.date3 }}_${{matrix.target}}编译完成😋|| curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=❌OpenWrt_${{ env.date3 }}_${{matrix.target}}编译失败😂
-    - name: Telegram notification
-      if: env.TELEGRAM_TOKEN && ! contains(github.event.action, 'notg')
-      continue-on-error: true
-      run: |
-        # [ steps.compile.outputs.status == 'success' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 OpenWrt ${{ env.date3 }} ${{matrix.target}} 编译成功 😋  https://op.supes.top/firmware/${{matrix.target}}/  ${{ env.COWURL }}   ${{ env.WETRANS }} 🚀" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ OpenWrt ${{ env.date3 }} ${{matrix.target}} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
-    - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@main
+    - name: 上传固件文件
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true'
+      uses: actions/upload-artifact@v2
       with:
-        retain_days: 1
-        keep_minimum_runs: 15
+        name: OpenWrt_firmware_${{matrix.target}}_${{ env.FILE_DATE }}
+        path: ./firmware/
 
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
-      continue-on-error: true
-      if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true' && !cancelled()
+    - name: 上传插件包文件
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_IPK == 'true'
+      uses: actions/upload-artifact@v2
       with:
-        keep_latest: 15
-        delete_tags: true
+        name: OpenWrt_package_${{matrix.target}}_${{ env.FILE_DATE }}
+        path: ./artifact/package/    
+      
+    - name: 上传固件到奶牛快传
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true'
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress ./firmware/ 2>&1 | tee cowtransfer.log
+        echo "::warning file=奶牛快传（${{matrix.target}}）::$(cat cowtransfer.log | grep https)"
+        
+    - name: 上传固件到 WeTransfer
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true'
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer wet -s -p 16 --no-progress ./firmware/ 2>&1 | tee wetransfer.log
+        echo "::warning file=WeTransfer（${{matrix.target}}）::$(cat wetransfer.log | grep https)"
+        
+    - name: 上传固件到网盘
+      uses: AEnterprise/rsync-deploy@v1.0 
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_MYPAN == 'true'
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }} 
+        ARGS: -avzr --exclude=
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        FOLDER: ./firmware/
+        SERVER_IP: ${{ secrets.SSH_HOST }} 
+        USERNAME: ${{ secrets.SSH_USERNAME }} 
+        SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}${{matrix.target}}/
+   
+    - name: 进入目录删除
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_MYPAN == 'true'
+      run: |
+         cd /home/runner/work/_temp/_github_home/
+         sudo rm -rf .ssh
+         
+    - name: 上传Packages到网盘
+      uses: AEnterprise/rsync-deploy@v1.0 
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_MYPAN == 'true'
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }} 
+        ARGS: -avz --delete --exclude='*.pyc'
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        FOLDER: ./artifact/package/
+        SERVER_IP: ${{ secrets.SSH_HOST }} 
+        USERNAME: ${{ secrets.SSH_USERNAME }} 
+        SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}Packages/
+ 
+    - name: 提取发布用的「奶牛快传」和「WeTransfer」的链接
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true'
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress ./firmware/ 2>&1 | tee cowtransfer.log
+        echo "COWTRANSFER_URL=$(cat cowtransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_ENV 
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer wet -s -p 16 --no-progress ./firmware/ 2>&1 | tee wetransfer.log
+        echo "WETRANSFER_URL=$(cat wetransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_ENV 
+        
+    - name: 自动发布固件到 Releases
+      uses: softprops/action-gh-release@v1
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      with:
+        name: ${{ env.WXFB_MESSAGE }}
+        tag_name: ${{ env.FILE_DATE2 }}-${{matrix.target}}
+        body: |            
+            ★  时间 : ${{ env.FILE_DATE1 }} 
+            ★  分支 : ${{ env.REPO_BRANCH }}
+            ★  源码 : ${{ env.REPO_URL }}            
+            高速下载地址：
+            ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+            
+            
+            ➤ 奶牛快传： ${{ env.COWTRANSFER_URL }}
+            
+            ➤ WeTransfer： ${{ env.WETRANSFER_URL }}
+            
+            注:链接有效期为7天，无需注册直接下载.
+            
+            ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+            
+        files: ./firmware/*
+        
+    - name: 完成编译微信通知
+      uses: emon100/Action-Serverchan@v2
+      if: steps.organizer.outputs.status == 'success' && env.SERVERCHAN_SCKEY == 'true'
+      with:
+        SCKEY: ${{ secrets.WEIXIN_SCKEY }}
+        text: 恭喜${{matrix.target}}固件编译成功！
+        desp: 您的${{ env.WXFB_MESSAGE }}固件成功编译完成了！
+
+              
+              完成时间：${{ env.FILE_DATE1 }}
+              
+              
+              发布地址：${{ env.GITHUB_RELEASE }}
+              
+              
+              奶牛快传：${{ env.COWTRANSFER_URL }}
+              
+              
+              WeTransfer：${{ env.WETRANSFER_URL }}
+              
+              
+              固件已经编译完成 🎈！！！
