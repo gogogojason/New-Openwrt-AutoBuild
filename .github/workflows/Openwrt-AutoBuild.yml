@@ -76,7 +76,7 @@ jobs:
         -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
         --data '{"event_type": "update"}'
          
-    - name: Initialization environment
+    - name: 开始安装编译所需系统
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -87,7 +87,7 @@ jobs:
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
     
-    - name: 更新日期
+    - name: 更新时区、编译时间
       id: date
       run: |
         echo "::set-output name=status::success"
