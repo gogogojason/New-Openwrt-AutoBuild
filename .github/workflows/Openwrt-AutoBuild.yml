@@ -154,7 +154,17 @@ jobs:
         echo "修改地址"
         sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' custom/luci-app-gpsysupgrade/root/usr/bin/upgrade.lua
         sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' custom/jason/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
-              
+          
+    - name: 检查空间使用情况
+      run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -hT
+        echo "======================="
+        du -h --max-depth=1 openwrt/ --exclude=build_dir --exclude=bin
+        du -h --max-depth=1 openwrt/custom
+        
     - name: SSH远程连接服务器配置固件
       uses: garypang13/debugger-action@master
       if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh' && github.event.inputs.ssh  != 'false')
