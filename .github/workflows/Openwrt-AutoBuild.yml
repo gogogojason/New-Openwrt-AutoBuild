@@ -154,7 +154,6 @@ jobs:
         echo "修改地址"
         sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' feeds/custom/luci-app-gpsysupgrade/root/usr/bin/upgrade.lua
         sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' feeds/custom/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
-        ./scripts/feeds update -a
         
     - name: 检查空间使用情况
       run: |
