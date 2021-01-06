@@ -49,6 +49,9 @@ find package/feeds/custom/*/ -maxdepth 1 -name "Makefile" ! -path "*rclone*" ! -
 | xargs -i sed -i "s/PKG_SOURCE_VERSION:=[0-9a-z]\{15,\}/PKG_SOURCE_VERSION:=latest/g" {}
 sed -i 's/$(VERSION) &&/$(VERSION) ;/g' include/download.mk
 date=`date +%m.%d.%Y`
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V %C by GaryPang'/g" package/base-files/files/etc/openwrt_release
+date1=`date +%Y.%m.%d`
+sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='hfy166 Ver.$date1'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/192.168.1.1/192.168.2.1/g" package/base-files/files/bin/config_generate
+sed -i "s/OpenWrt/MiRouter/g" package/base-files/files/bin/config_generate
 sed -i "s/# REVISION:=x/REVISION:= $date/g" include/version.mk
 sed -i '$a cgi-timeout = 300' package/feeds/packages/uwsgi/files-luci-support/luci-webui.ini
