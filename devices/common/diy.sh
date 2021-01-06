@@ -63,4 +63,4 @@ sed -i 's/系统在线更新/系统升级/g' feeds/custom/luci-app-gpsysupgrade/
 sed -i 's/系统在线更新/系统升级/g' feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
 sed -i "1i\msgstr "Passwall+"" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
 sed -i "1i\msgid "Bypass"" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
-sed -i 's/"IP限速"/"网速控制"/g' feeds/custom/luci-app-eqos/files/po/zh-cn/eqos.po
+sed -i 's/"IP限速"/"网速控制"/g' feeds/custom/luci-app-eqos/po/zh_Hans/eqos.po
