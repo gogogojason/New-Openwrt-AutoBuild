@@ -66,5 +66,5 @@ named1=`msgid "Bypass"`
 sed -i "1i\$named" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
 sed -i "1i\$named1" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
 sed -i "3a\lovertg520" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
-sed -i 's/"lovertg520"//g' feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
+sed -i 's/lovertg520//g' feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
 sed -i 's/"IP限速"/"网速控制"/g' feeds/custom/luci-app-eqos/po/zh_Hans/eqos.po
