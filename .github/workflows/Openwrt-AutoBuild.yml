@@ -157,6 +157,7 @@ jobs:
  
     - name: feeds重新更新
       run: | 
+        cd openwrt
         ./scripts/feeds update -a
         
     - name: 检查空间使用情况
