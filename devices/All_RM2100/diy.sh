@@ -3,9 +3,9 @@ echo -e "\q" | svn co https://github.com/coolsnowwolf/lede/trunk/target/linux/ra
 rm -Rf target/linux/ramips/.svn
 echo -e "\q" | svn co https://github.com/coolsnowwolf/lede/trunk/target/linux/ramips/patches-5.4 target/linux/ramips/patches-5.4
 
-sed -i "s/OpenWrt_2G/RM2100/g" feeds/custom/mt-drivers/mt_wifi/files/mt7603.dat
-sed -i "s/OpenWrt_5G/RM2100_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7615.1.5G.dat
-sed -i "s/OpenWrt_5G/RM2100_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7615.5G.dat
+sed -i "s/OpenWrt_2G/RMWiFi/g" feeds/custom/mt-drivers/mt_wifi/files/mt7603.dat
+sed -i "s/OpenWrt_5G/RMWiFi_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7615.1.5G.dat
+sed -i "s/OpenWrt_5G/RMWiFi_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7615.5G.dat
 
 sed -i 's/${Arch}/${Arch}_softfloat/g' feeds/custom/luci-app-adguardhome/root/usr/share/AdGuardHome/links.txt
 rm -f feeds/custom/luci-theme-edge/htdocs/luci-static/edge/logo.png
