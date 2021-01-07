@@ -67,6 +67,7 @@ jobs:
         echo "UPLOAD_RELEASE=${UPLOAD_RELEASE}" >> $GITHUB_ENV
         echo "SERVERCHAN_SCKEY=${SERVERCHAN_SCKEY}" >> $GITHUB_ENV
         echo "UPLOAD_MYPAN=${UPLOAD_MYPAN}" >> $GITHUB_ENV
+        echo "UPLOAD_PKG=${UPLOAD_PKG}" >> $GITHUB_ENV
         
     - name: 更新克隆插件包
       if: github.event.repository.owner.id == '48883331'
@@ -270,14 +271,14 @@ jobs:
         SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}${{matrix.target}}/
    
     - name: 进入目录删除
-      if: env.UPLOAD_MYPAN == 'true'
+      if: env.UPLOAD_PKG == 'true'
       run: |
          cd /home/runner/work/_temp/_github_home/
          sudo rm -rf .ssh
          
     - name: 上传Packages到网盘
       uses: AEnterprise/rsync-deploy@v1.0 
-      if: env.UPLOAD_MYPAN == 'true'
+      if: env.UPLOAD_PKG == 'true'
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }} 
         ARGS: -avz --delete --exclude='*.pyc'
