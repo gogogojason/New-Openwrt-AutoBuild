@@ -230,28 +230,28 @@ jobs:
         fi
         
     - name: 上传固件文件
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true'
+      if: env.UPLOAD_FIRMWARE == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: OpenWrt_firmware_${{matrix.target}}_${{ env.FILE_DATE }}
         path: ./firmware/
 
     - name: 上传插件包文件
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_IPK == 'true'
+      if: env.UPLOAD_IPK == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: OpenWrt_package_${{matrix.target}}_${{ env.FILE_DATE }}
         path: ./artifact/package/    
       
     - name: 上传固件到奶牛快传
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true'
+      if: env.UPLOAD_COWTRANSFER == 'true'
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer cow --block 2621440 -s -p 64 --no-progress ./firmware/ 2>&1 | tee cowtransfer.log
         echo "::warning file=奶牛快传（${{matrix.target}}）::$(cat cowtransfer.log | grep https)"
         
     - name: 上传固件到 WeTransfer
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true'
+      if: env.UPLOAD_WETRANSFER == 'true'
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet -s -p 16 --no-progress ./firmware/ 2>&1 | tee wetransfer.log
@@ -259,7 +259,7 @@ jobs:
         
     - name: 上传固件到网盘
       uses: AEnterprise/rsync-deploy@v1.0 
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_MYPAN == 'true'
+      if: env.UPLOAD_MYPAN == 'true'
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }} 
         ARGS: -avzr --exclude=
@@ -270,14 +270,14 @@ jobs:
         SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}${{matrix.target}}/
    
     - name: 进入目录删除
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_MYPAN == 'true'
+      if: env.UPLOAD_MYPAN == 'true'
       run: |
          cd /home/runner/work/_temp/_github_home/
          sudo rm -rf .ssh
          
     - name: 上传Packages到网盘
       uses: AEnterprise/rsync-deploy@v1.0 
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_MYPAN == 'true'
+      if: env.UPLOAD_MYPAN == 'true'
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }} 
         ARGS: -avz --delete --exclude='*.pyc'
@@ -288,7 +288,7 @@ jobs:
         SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}Packages/
  
     - name: 提取发布用的「奶牛快传」和「WeTransfer」的链接
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true'
+      if: env.UPLOAD_RELEASE == 'true'
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer cow --block 2621440 -s -p 64 --no-progress ./firmware/ 2>&1 | tee cowtransfer.log
@@ -299,7 +299,7 @@ jobs:
         
     - name: 自动发布固件到 Releases
       uses: softprops/action-gh-release@v1
-      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true'
+      if: env.UPLOAD_RELEASE == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
@@ -325,7 +325,7 @@ jobs:
         
     - name: 完成编译微信通知
       uses: emon100/Action-Serverchan@v2
-      if: steps.organizer.outputs.status == 'success' && env.SERVERCHAN_SCKEY == 'true'
+      if: env.SERVERCHAN_SCKEY == 'true'
       with:
         SCKEY: ${{ secrets.WEIXIN_SCKEY }}
         text: 恭喜${{matrix.target}}固件编译成功！
