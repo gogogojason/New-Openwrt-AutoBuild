@@ -204,7 +204,7 @@ jobs:
       run: |
         mkdir -p ./artifact/package
         rm -rf $(find openwrt/bin/targets/ -type d -name "packages")
-        cp -rf openwrt/bin/packages/ ./artifact/package/
+        cp -rf $(find openwrt/bin/packages/ -type f -name "*.ipk") ./artifact/package/
         mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
         -name "*combined*" \
         -or -name "*sysupgrade*" \
