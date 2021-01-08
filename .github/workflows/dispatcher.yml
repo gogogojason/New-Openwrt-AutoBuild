@@ -32,7 +32,17 @@ env:
 jobs:
   build:
     runs-on: Ubuntu-20.04
+    
+    name: 下载文件
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [Packages]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100]
+        
     steps:
+    - name: 准备完成
+      uses: actions/checkout@main
+      
     - name: clone packages
       run: |
        git clone https://op.supes.top/packages ./packages
@@ -49,6 +59,13 @@ jobs:
         USERNAME: ${{ secrets.SSH_USERNAME }} 
         SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}Packages/
         
+    - name: 完成上传微信通知
+      uses: emon100/Action-Serverchan@v2
+      with:
+        SCKEY: ${{ secrets.WEIXIN_SCKEY }}
+        text: 恭喜packages成功部署
+        desp: packages成功部署
+                
     - name: Delete workflow runs
       uses: ActionsRML/delete-workflow-runs@main
       continue-on-error: true
