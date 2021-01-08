@@ -61,8 +61,8 @@ sed -i 's/https:\/\/op.supes.top/http:\/\/openwrt.ink:8666/g' feeds/custom/luci-
 rm -f feeds/custom/luci-app-gpsysupgrade/luasrc/view/admin_status/index/links.htm
 git clone https://github.com/gogogojason/logos.git package/logos
 cp package/logos/oplinks.htm feeds/custom/luci-app-gpsysupgrade/luasrc/view/admin_status/index/links.htm
-rm -f package/system/rpcd/Makefile
-cp package/logos/oldrpcd package/system/rpcd/Makefile
+#rm -f package/system/rpcd/Makefile
+#cp package/logos/oldrpcd package/system/rpcd/Makefile
 sed -i 's/系统在线更新/系统升级/g' feeds/custom/luci-app-gpsysupgrade/po/zh_Hans/gpsysupgrade.po
 sed -i "1i\msgstr \"Passwall+\"" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
 sed -i "1i\msgid \"Bypass\"" feeds/custom/luci-app-bypass/po/zh_Hans/bypass.zh-cn.po
