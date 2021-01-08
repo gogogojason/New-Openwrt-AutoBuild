@@ -1,4 +1,5 @@
 #!/bin/bash
+sed -i "s/OpenWrt/MyRouter/g" package/base-files/files/bin/config_generate
 
 echo '
 CONFIG_CRYPTO_CHACHA20_X86_64=y
