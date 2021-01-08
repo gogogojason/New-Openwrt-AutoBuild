@@ -1,5 +1,5 @@
---- a/package/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
-+++ b/package/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
+--- a/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
++++ b/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
 @@ -45,2 +45,29 @@
  
 +    getCPUInfo = {
@@ -31,8 +31,8 @@
 +
  	setLocaltime = {
 
---- a/package/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
-+++ b/package/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
+--- a/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
++++ b/feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci
 @@ -358,7 +358,10 @@ local methods = {
  		call = function(args)
  			local util = require "luci.util"
@@ -46,8 +46,8 @@
  				local ports = { }
  
 
---- a/package/feeds/luci/modules/luci-mod-system/root/usr/share/rpcd/acl.d/luci-mod-system.json
-+++ b/package/feeds/luci/modules/luci-mod-system/root/usr/share/rpcd/acl.d/luci-mod-system.json
+--- a/feeds/luci/modules/luci-mod-system/root/usr/share/rpcd/acl.d/luci-mod-system.json
++++ b/feeds/luci/modules/luci-mod-system/root/usr/share/rpcd/acl.d/luci-mod-system.json
 @@ -3,7 +3,7 @@
  		"description": "Grant access to system configuration",
  		"read": {
@@ -58,8 +58,8 @@
  			"uci": [ "luci", "system" ]
  		},
 
---- a/package/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
-+++ b/package/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
+--- a/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
++++ b/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
 @@ -15,17 +15,24 @@
  
 +var callCPUInfo = rpc.declare({
@@ -100,8 +100,8 @@
 +			_('Load Average'),     Array.isArray(systeminfo.load) ? '%.2f, %.2f, %.2f'.format(
  				systeminfo.load[0] / 65535.0,
 
---- a/package/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/30_network.js
-+++ b/package/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/30_network.js
+--- a/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/30_network.js
++++ b/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/30_network.js
 @@ -2,6 +2,7 @@
  'require baseclass';
  'require fs';
