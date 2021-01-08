@@ -45,7 +45,7 @@ jobs:
       
     - name: clone packages
       run: |
-       git clone https://op.supes.top/packages ./packages
+       git clone https://op.supes.top/packages/ ./packages
        rm -rf packages/aarch64_generic/
        
     - name: deploy
