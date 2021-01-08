@@ -65,10 +65,3 @@ jobs:
         SCKEY: ${{ secrets.WEIXIN_SCKEY }}
         text: 恭喜packages成功部署
         desp: packages成功部署
-                
-    - name: Delete workflow runs
-      uses: ActionsRML/delete-workflow-runs@main
-      continue-on-error: true
-      with:
-        retain_days: 0
-        keep_minimum_runs: 0
