@@ -6,7 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: Repo Dispatcher
+name: Download Packages
 
 on: 
   # push: 
@@ -21,40 +21,34 @@ on:
         required: false
         default: 'false'
 
+  watch:
+    types: [started]
+
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-  TZ: Asia/Shanghai
+  SCKEY: ${{ secrets.SCKEY }}
+  TZ: Asia/Shanghai        
 
 jobs:
   build:
     runs-on: Ubuntu-20.04
     steps:
-    - name: Trigger Compile
+    - name: clone packages
       run: |
-        sudo timedatectl set-timezone "$TZ"
-        if [ ${{ github.event.inputs.ssh }} == 'true' ]; then
-          echo "SSH=ssh" >> $GITHUB_ENV
-        fi
-        curl \
-        -X POST https://api.github.com/repos/${{ github.actor }}/${{ github.event.repository.name }}/dispatches \
-        -H "Accept: application/vnd.github.everest-preview+json" \
-        -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
-        -d '{"event_type": "x86_64 ${{ env.SSH }}", "client_payload": {"target": "x86_64"}}'
-        curl \
-        -X POST https://api.github.com/repos/${{ github.actor }}/${{ github.event.repository.name }}/dispatches \
-        -H "Accept: application/vnd.github.everest-preview+json" \
-        -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
-        -d '{"event_type": "nanopi-r2s ${{ env.SSH }}", "client_payload": {"target": "nanopi-r2s"}}'
-        curl \
-        -X POST https://api.github.com/repos/${{ github.actor }}/${{ github.event.repository.name }}/dispatches \
-        -H "Accept: application/vnd.github.everest-preview+json" \
-        -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
-        -d '{"event_type": "redmi-ac2100 ${{ env.SSH }}", "client_payload": {"target": "redmi-ac2100"}}'
-        curl \
-        -X POST https://api.github.com/repos/${{ github.actor }}/${{ github.event.repository.name }}/dispatches \
-        -H "Accept: application/vnd.github.everest-preview+json" \
-        -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
-        -d '{"event_type": "phicomm-k2p ${{ env.SSH }}", "client_payload": {"target": "phicomm-k2p"}}'
+       git clone https://op.supes.top/packages ./packages
+       rm -rf packages/aarch64_generic/
+       
+    - name: deploy
+      uses: AEnterprise/rsync-deploy@v1.0 
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }} 
+        ARGS: -avzr --exclude=
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        FOLDER: ./packages/
+        SERVER_IP: ${{ secrets.SSH_HOST }} 
+        USERNAME: ${{ secrets.SSH_USERNAME }} 
+        SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}Packages/
+        
     - name: Delete workflow runs
       uses: ActionsRML/delete-workflow-runs@main
       continue-on-error: true
