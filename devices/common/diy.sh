@@ -18,12 +18,12 @@ svn co https://github.com/Lienol/openwrt/trunk/package/lean/UnblockNeteaseMusic 
 svn co https://github.com/Lienol/openwrt/trunk/package/lean/UnblockNeteaseMusicGo feeds/custom/UnblockNeteaseMusicGo
 svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-aliyun feeds/custom/ddns-scripts-aliyun
 svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-dnspod feeds/custom/ddns-scripts-dnspod
-#rm -Rf feeds/custom/AdGuardHome
-#rm -Rf feeds/custom/luci-app-adguardhome
+rm -Rf feeds/custom/AdGuardHome
+rm -Rf feeds/custom/luci-app-adguardhome
 #sed -i 's/etc\/AdGuardHome/etc\/AdGuardHome\/AdGuardHome/g' /luci-app-adguardhome/root/etc/init.d/AdGuardHome
-#svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
-#svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
-sed -i 's/etc\/AdGuardHome/etc/g' feeds/custom/luci-app-adguardhome/root/etc/config/AdGuardHome
+svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
+svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
+#sed -i 's/etc\/AdGuardHome/etc/g' feeds/custom/luci-app-adguardhome/root/etc/config/AdGuardHome
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
 ./scripts/feeds update -a
@@ -87,4 +87,5 @@ sed -i 's/"IP限速"/"网速控制"/g' feeds/custom/luci-app-eqos/po/zh_Hans/eqo
 sed -i 's/+luci-theme-bootstrap/+luci-theme-edge/g' feeds/luci/collections/luci/Makefile
 sed -i "s/bootstrap/argon/g" feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/set luci.main.mediaurlbase=\/luci-static\/bootstrap/d' feeds/luci/themes/luci-theme-bootstrap/root/etc/uci-defaults/30_luci-theme-bootstrap
-
+sed -i 's/a0f4fe0c3eb8faa5bd9c8376d132f340b9558e750c91deb2d5028aa3d0047767/993a3a5490a544c2cbf2ef15cf7e7ed21af1845baf228318d5c36ef8827e157c/g' package/network/utils/iptables/Makefile
+sed -i 's/1.8.6/1.8.4/g' package/network/utils/iptables/Makefile
