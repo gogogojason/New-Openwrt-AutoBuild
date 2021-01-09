@@ -23,7 +23,7 @@ rm -Rf feeds/custom/luci-app-adguardhome
 #sed -i 's/etc\/AdGuardHome/etc\/AdGuardHome\/AdGuardHome/g' /luci-app-adguardhome/root/etc/init.d/AdGuardHome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
-sed -i 's/etc\/config/etc/g' feeds/custom/luci-app-adguardhome/root/etc/config/AdGuardHome
+#sed -i 's/etc\/config/etc/g' feeds/custom/luci-app-adguardhome/root/etc/config/AdGuardHome
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
 ./scripts/feeds update -a
