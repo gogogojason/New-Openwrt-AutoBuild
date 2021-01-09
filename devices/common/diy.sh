@@ -11,8 +11,8 @@ svn co https://github.com/project-openwrt/packages/trunk/lang/python/Flask-RESTf
 svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/luci-app-unblockmusic package/luci-app-unblockmusic
 rm -Rf feeds/custom/AdGuardHome
 rm -Rf feeds/custom/luci-app-adguardhome
-svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/
-svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/
+svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
+svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
 ./scripts/feeds update -a
