@@ -8,7 +8,16 @@ mv -f feeds/packages/admin/netdata feeds/custom/netdata
 mv -f feeds/packages/net/shadowsocks-libev feeds/custom/shadowsocks-libev
 rm -Rf feeds/packages/net/{smartdns,frp,mwan3,miniupnpd,aria2} feeds/luci/applications/{luci-app-dockerman,luci-app-smartdns,luci-app-frpc}
 svn co https://github.com/project-openwrt/packages/trunk/lang/python/Flask-RESTful feeds/packages/lang/python/Flask-RESTful
-svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/luci-app-unblockmusic package/luci-app-unblockmusic
+rm -Rf feeds/custom/luci-app-unblockmusic
+rm -Rf feeds/custom/UnblockNeteaseMusic-Go
+rm -Rf feeds/custom/UnblockNeteaseMusic
+rm -Rf feeds/custom/ddns-scripts-aliyun
+rm -Rf feeds/custom/ddns-scripts-dnspod
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/luci-app-unblockmusic feeds/custom/luci-app-unblockmusic
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/UnblockNeteaseMusic feeds/custom/UnblockNeteaseMusic
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/UnblockNeteaseMusicGo feeds/custom/UnblockNeteaseMusicGo
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-aliyun feeds/custom/ddns-scripts-aliyun
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-dnspod feeds/custom/ddns-scripts-dnspod
 rm -Rf feeds/custom/AdGuardHome
 rm -Rf feeds/custom/luci-app-adguardhome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
