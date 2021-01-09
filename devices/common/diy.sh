@@ -20,6 +20,7 @@ svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-aliyun 
 svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-dnspod feeds/custom/ddns-scripts-dnspod
 rm -Rf feeds/custom/AdGuardHome
 rm -Rf feeds/custom/luci-app-adguardhome
+#sed -i 's/etc\/AdGuardHome/etc\/AdGuardHome\/AdGuardHome/g' /luci-app-adguardhome/root/etc/init.d/AdGuardHome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
 sed -i 's/etc\/config/etc/g' feeds/custom/luci-app-adguardhome/root/etc/config/AdGuardHome
