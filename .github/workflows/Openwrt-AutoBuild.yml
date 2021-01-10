@@ -68,7 +68,7 @@ jobs:
         echo "UPLOAD_PKG=${UPLOAD_PKG}" >> $GITHUB_ENV
         
     - name: 更新克隆插件包
-      if: github.event.repository.owner.id == '48883331'
+      if: github.event.repository.owner.id == '48883331'&& ! contains(github.event.action, 'nopd')
       run: |
         curl -X POST https://api.github.com/repos/garypang13/openwrt-packages/dispatches \
         -H "Accept: application/vnd.github.everest-preview+json" \
