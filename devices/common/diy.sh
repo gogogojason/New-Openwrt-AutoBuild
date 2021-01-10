@@ -15,8 +15,8 @@ rm -Rf feeds/custom/AdGuardHome
 rm -Rf feeds/custom/luci-app-adguardhome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
-svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-aliyun feeds/custom/ddns-scripts-aliyun
-svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts-dnspod feeds/custom/ddns-scripts-dnspod
+echo -e "\q" | svn co https://github.com/Lienol/openwrt/branches/19.07/package/lean/ddns-scripts-aliyun feeds/custom/ddns-scripts-aliyun
+echo -e "\q" | svn co https://github.com/Lienol/openwrt/branches/19.07/package/lean/ddns-scripts-dnspod feeds/custom/ddns-scripts-dnspod
 #=================================================
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
