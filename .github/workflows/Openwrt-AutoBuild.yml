@@ -30,24 +30,15 @@ env:
   TZ: Asia/Shanghai
   GITHUB_RELEASE: https://github.com/gogogojason/OpenWrt-AutoBuild/releases
   
-#jobs:
-#  build:
-#    runs-on: Ubuntu-20.04
-    
-#    name: 编译 ${{matrix.target}}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        target: [x86_64,All_RM2100,Sim_RM2100,Ap_RM2100]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Test]
 jobs:
   build:
     runs-on: Ubuntu-20.04
     
-    name: Build ${{matrix.target}}
+    name: 编译 ${{matrix.target}}
     strategy:
       fail-fast: false
       matrix:
-        target: ["${{ github.event.client_payload.target }}"]
+        target: [x86_64,All_RM2100,Sim_RM2100,Ap_RM2100]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Test]
         
     steps:
     - name: 准备完成
@@ -77,7 +68,7 @@ jobs:
         echo "UPLOAD_PKG=${UPLOAD_PKG}" >> $GITHUB_ENV
         
     - name: 更新克隆插件包
-      if: github.event.repository.owner.id == '48883331'&& ! contains(github.event.action, 'nopd')
+      if: github.event.repository.owner.id == '48883331'
       run: |
         curl -X POST https://api.github.com/repos/garypang13/openwrt-packages/dispatches \
         -H "Accept: application/vnd.github.everest-preview+json" \
