@@ -10,4 +10,4 @@ sed -i "s/OpenWrt/MiRouter/g" package/base-files/files/bin/config_generate
 
 rm -f feeds/custom/luci-theme-edge/htdocs/luci-static/edge/logo.png
 cp package/logos/milogo.png feeds/custom/luci-theme-edge/htdocs/luci-static/edge/logo.png
-rm package/logos -r
+rm -Rf package/logos
