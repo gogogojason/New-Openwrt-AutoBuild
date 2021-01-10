@@ -159,6 +159,10 @@ jobs:
         cd openwrt
         ./scripts/feeds update -a
         
+    - name: SSH远程连接服务器配置固件
+      uses: garypang13/debugger-action@master
+      if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh' && github.event.inputs.ssh  != 'false')
+        
     - name: 检查空间使用情况
       run: |
         echo "======================="
@@ -177,10 +181,6 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-        
-    - name: SSH远程连接服务器配置固件
-      uses: garypang13/debugger-action@master
-      if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh' && github.event.inputs.ssh  != 'false')
         
     - name: 开始编译固件
       id: compile
