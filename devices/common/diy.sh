@@ -11,8 +11,14 @@ svn co https://github.com/project-openwrt/packages/trunk/lang/python/Flask-RESTf
 #=================================================
 rm -Rf feeds/custom/AdGuardHome
 rm -Rf feeds/custom/luci-app-adguardhome
+rm -Rf feeds/luci/applications/luci-app-ddns
+rm -Rf feeds/custom/ddns-scripts_aliyun
+rm -Rf feeds/custom/ddns-scripts_dnspod
 svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
 svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
+svn co https://github.com/Lienol/openwrt-luci/branches/19.07/applications/luci-app-ddns feeds/custom/luci-app-ddns
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts_aliyun feeds/custom/ddns-scripts_aliyun
+svn co https://github.com/Lienol/openwrt/trunk/package/lean/ddns-scripts_dnspod feeds/custom/ddns-scripts_dnspod
 #=================================================
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
