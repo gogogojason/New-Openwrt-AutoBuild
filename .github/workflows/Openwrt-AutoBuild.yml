@@ -30,15 +30,24 @@ env:
   TZ: Asia/Shanghai
   GITHUB_RELEASE: https://github.com/gogogojason/OpenWrt-AutoBuild/releases
   
+#jobs:
+#  build:
+#    runs-on: Ubuntu-20.04
+    
+#    name: 编译 ${{matrix.target}}
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        target: [x86_64,All_RM2100,Sim_RM2100,Ap_RM2100]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Test]
 jobs:
   build:
     runs-on: Ubuntu-20.04
     
-    name: 编译 ${{matrix.target}}
+    name: Build ${{matrix.target}}
     strategy:
       fail-fast: false
       matrix:
-        target: [x86_64,All_RM2100,Sim_RM2100,Ap_RM2100]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Test]
+        target: ["${{ github.event.client_payload.target }}"]
         
     steps:
     - name: 准备完成
