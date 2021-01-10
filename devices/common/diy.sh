@@ -9,10 +9,11 @@ mv -f feeds/packages/utils/docker feeds/custom/docker
 rm -Rf feeds/packages/net/{smartdns,frp,mwan3,miniupnpd,aria2} feeds/luci/applications/{luci-app-dockerman,luci-app-smartdns,luci-app-frpc}
 svn co https://github.com/project-openwrt/packages/trunk/lang/python/Flask-RESTful feeds/packages/lang/python/Flask-RESTful
 #=================================================
-rm -Rf feeds/custom/AdGuardHome
-rm -Rf feeds/custom/luci-app-adguardhome
-svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
-svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
+#rm -Rf feeds/custom/AdGuardHome
+#rm -Rf feeds/custom/luci-app-adguardhome
+#svn co https://github.com/kenzok8/openwrt-packages/trunk/AdGuardHome feeds/custom/AdGuardHome
+#svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome feeds/custom/luci-app-adguardhome
+sed -i 's/etc\/AdGuardHome/etc/g' feeds/custom/luci-app-adguardhome/root/etc/config/AdGuardHome
 #=================================================
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
