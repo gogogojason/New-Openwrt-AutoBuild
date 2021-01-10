@@ -87,5 +87,4 @@ sed -i 's/"IP限速"/"网速控制"/g' feeds/custom/luci-app-eqos/po/zh_Hans/eqo
 sed -i 's/+luci-theme-bootstrap/+luci-theme-edge/g' feeds/luci/collections/luci/Makefile
 sed -i "s/bootstrap/argon/g" feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/set luci.main.mediaurlbase=\/luci-static\/bootstrap/d' feeds/luci/themes/luci-theme-bootstrap/root/etc/uci-defaults/30_luci-theme-bootstrap
-sed -i 's/a0f4fe0c3eb8faa5bd9c8376d132f340b9558e750c91deb2d5028aa3d0047767/993a3a5490a544c2cbf2ef15cf7e7ed21af1845baf228318d5c36ef8827e157c/g' package/network/utils/iptables/Makefile
-sed -i 's/1.8.6/1.8.4/g' package/network/utils/iptables/Makefile
+rm -f ./patches/101-remove-check-already.patch
