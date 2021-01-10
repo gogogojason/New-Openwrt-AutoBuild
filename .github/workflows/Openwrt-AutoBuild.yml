@@ -168,10 +168,6 @@ jobs:
         echo "======================="
         du -h --max-depth=1 openwrt/ --exclude=build_dir --exclude=bin
         du -h --max-depth=1 openwrt/feeds/custom
-        
-    - name: SSH远程连接服务器配置固件
-      uses: garypang13/debugger-action@master
-      if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh' && github.event.inputs.ssh  != 'false')
 
     - name: 下载软件包
       id: package
@@ -181,6 +177,10 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+        
+    - name: SSH远程连接服务器配置固件
+      uses: garypang13/debugger-action@master
+      if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh' && github.event.inputs.ssh  != 'false')
         
     - name: 开始编译固件
       id: compile
