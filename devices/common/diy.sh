@@ -9,6 +9,7 @@ mv -f feeds/packages/utils/docker feeds/custom/docker
 mv -f feeds/packages/utils/dockerd feeds/custom/dockerd
 rm -Rf feeds/packages/net/{smartdns,frp,mwan3,miniupnpd,aria2} feeds/luci/applications/{luci-app-dockerman,luci-app-smartdns,luci-app-frpc} feeds/luci/collections/luci-lib-docker
 svn co https://github.com/project-openwrt/packages/trunk/lang/python/Flask-RESTful feeds/packages/lang/python/Flask-RESTful
+svn co https://github.com/project-openwrt/packages/trunk/lang/node-yarn feeds/packages/lang/node-yarn
 #=================================================
 #rm -Rf feeds/custom/AdGuardHome
 #rm -Rf feeds/custom/luci-app-adguardhome
