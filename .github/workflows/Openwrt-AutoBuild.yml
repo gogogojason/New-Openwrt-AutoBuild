@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [x86_64]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Mi2100，Test]
+        target: [x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Mi2100]  #[x86_64,All_RM2100,Sim_RM2100,Ap_RM2100,Mi2100，Test]
         
     steps:
     - name: 准备完成
