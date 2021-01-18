@@ -37,7 +37,7 @@ dns:
   all_servers: true
   fastest_addr: false
   allowed_clients: []
-  disallowed_clients:[]
+  disallowed_clients: []
   blocked_hosts:
   - version.bind
   - id.server
