@@ -124,6 +124,8 @@ jobs:
         cp -rf devices openwrt/
         cd openwrt
         chmod +x devices/common/$DIY_SH
+        chmod +x devices/common/files/sbin/reboot
+        chmod +x devices/common/files/sbin/ethinfo
         /bin/bash "devices/common/$DIY_SH"
         cp -Rf ./diy/* ./
         if [ -f "devices/${{matrix.target}}/$DIY_SH" ]; then
