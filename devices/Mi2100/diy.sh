@@ -4,9 +4,9 @@ rm -Rf target/linux/ramips/.svn
 echo -e "\q" | svn co https://github.com/coolsnowwolf/lede/trunk/target/linux/ramips/patches-5.4 target/linux/ramips/patches-5.4
 sed -i 's?admin/status/channel_analysis??' package/feeds/luci/luci-mod-status/root/usr/share/luci/menu.d/luci-mod-status.json
 
-sed -i "s/OpenWrt_2G/RMWiFi/g" feeds/custom/mt-drivers/mt_wifi/files/mt7603.dat
-sed -i "s/OpenWrt_5G/RMWiFi_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7612.dat
-sed -i "s/OpenWrt_5G/RMWiFi_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7615.dat
+sed -i "s/OpenWrt_2G/MiWiFi/g" feeds/custom/mt-drivers/mt_wifi/files/mt7603.dat
+sed -i "s/OpenWrt_5G/MiWiFi_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7612.dat
+sed -i "s/OpenWrt_5G/MiWiFi_5G/g" feeds/custom/mt-drivers/mt_wifi/files/mt7615.dat
 sed -i "s/OpenWrt/MiRouter/g" package/base-files/files/bin/config_generate
 
 sed -i 's/${Arch}/${Arch}_softfloat/g' feeds/custom/luci-app-adguardhome/root/usr/share/AdGuardHome/links.txt
@@ -14,4 +14,6 @@ rm -f feeds/custom/luci-theme-edge/htdocs/luci-static/edge/logo.png
 rm -f feeds/custom/luci-app-unblockmusic/po/zh_Hans/unblockmusic.po
 cp package/logos/milogo.png feeds/custom/luci-theme-edge/htdocs/luci-static/edge/logo.png
 cp package/logos/opunblockmusic.po feeds/custom/luci-app-unblockmusic/po/zh_Hans/unblockmusic.po
+cp package/logos/opcpuinfo files/sbin/cpuinfo
 rm -Rf package/logos
+
