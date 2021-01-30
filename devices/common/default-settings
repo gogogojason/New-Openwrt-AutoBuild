@@ -16,6 +16,7 @@ sed -i '/profile.d/d' /lib/upgrade/keep.d/base-files
 rm -rf /tmp/luci-*
 
 sed -i '/S99opkg/d' /etc/crontabs/root
+sed -i 's/https:\/\/op.supes.top/http:\/\/openwrt.ink:8666/g' /etc/rc.d/S99opkg
 echo "0 4 * * * sh /etc/rc.d/S99opkg >/tmp/opkgupdate.log 2>&1" >> /etc/crontabs/root
 
 uci set system.@rngd[0].enabled="1"
@@ -76,6 +77,8 @@ fi
 cp -R /www/cgi-bin/* /www/
 find /www -type d -exec chmod 755 {} \;
 chmod +x /www/luci
+chmod 755 /sbin/reboot
+chmod 755 /sbin/ethinfo
 
 sed -i "s/git-.*-\(.*\)/git-\1/g" /usr/lib/lua/luci/version.lua
 
