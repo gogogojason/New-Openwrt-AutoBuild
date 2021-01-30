@@ -11,5 +11,6 @@ sed -i 's/https:\/\/op.supes.top/https:\/\/mirrors.cloud.tencent.com\/openwrt/g'
 sed -i '$a src/gz openwrt_packages2 https://mirrors.cloud.tencent.com/openwrt/releases/19.07.5/packages/mipsel_24kc/packages' /etc/opkg/distfeeds.conf
 sed -i '$a src/gz openwrt_base2 https://mirrors.cloud.tencent.com/openwrt/releases/19.07.5/packages/mipsel_24kc/base' /etc/opkg/distfeeds.conf
 sed -i '$a src/gz openwrt_custom http://openwrt.ink:8666/Packages/mipsel_24kc' /etc/opkg/distfeeds.conf
+chmod 755 /sbin/cpuinfo
 
 exit 0
