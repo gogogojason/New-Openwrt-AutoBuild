@@ -153,10 +153,10 @@ jobs:
         sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' feeds/custom/luci-app-gpsysupgrade/root/usr/bin/upgrade.lua
         sed -i 's/firmware\/redmi-ac2100/firmware\/${{matrix.target}}/g' feeds/custom/luci-app-gpsysupgrade/luasrc/model/cbi/gpsysupgrade/sysupgrade.lua
  
-    - name: feeds重新更新
-      run: | 
-        cd openwrt
-        ./scripts/feeds update -a
+#    - name: feeds重新更新
+#      run: | 
+#        cd openwrt
+#        ./scripts/feeds update -a
         
     - name: SSH远程连接服务器配置固件
       uses: garypang13/debugger-action@master
