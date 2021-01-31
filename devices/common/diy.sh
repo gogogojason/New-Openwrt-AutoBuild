@@ -19,7 +19,6 @@ svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-adguardhome fe
 #=================================================
 ./scripts/feeds update luci packages custom
 ./scripts/feeds install -a
-./scripts/feeds install -a
 sed -i 's/Os/O2/g' include/target.mk
 rm -Rf tools/upx && svn co https://github.com/coolsnowwolf/lede/trunk/tools/upx tools/upx
 rm -Rf tools/ucl && svn co https://github.com/coolsnowwolf/lede/trunk/tools/ucl tools/ucl
